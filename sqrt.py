@@ -2,7 +2,7 @@ def simple_abs(number):
     return -number if number < 0 else number
 
 
-def my_sqrt(number, accuracy=0.00005):
+def my_sqrt(number, accuracy=0.00001):
     previous_value = -1.0
     root = 1.0
     while accuracy < simple_abs(root - previous_value):

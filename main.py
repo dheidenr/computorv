@@ -169,27 +169,41 @@ def get_reduced(coefs: list, variables: list, degrees: list):
 
 def print_reduced(degree_coef:dict):
     line = ''
+    max_degree =  max(degree_coef.keys())
     if degree_coef is not None:
-        for iter in range(max(degree_coef.keys()) + 1):
+        for iter in range(max_degree + 1):
             if iter in degree_coef:
-                if iter == 0:
-                    line += str(degree_coef[iter][0]) + ' '
-                if iter == 1:
-                    if degree_coef[iter][0] < 0:
-                        sign = '- '
-                        number = str(-degree_coef[iter][0])
-                    else:
-                        sign = '+ '
-                        number = str(degree_coef[iter][0])
-                    line += sign + number + ' * ' + str(degree_coef[iter][1]) + ' '
-                if iter > 1:
-                    if degree_coef[iter][0] < 0:
-                        sign = '- '
-                        number = str(-degree_coef[iter][0])
-                    else:
-                        sign = '+ '
-                        number = str(degree_coef[iter][0])
-                    line += sign + number + ' * ' + str(degree_coef[iter][1]) + POWER + str(iter) + ' '
+                if degree_coef[iter][0] != 0 or (max_degree == 0 and degree_coef[iter][0] == 0):
+                    if iter == 0:
+                        line += str(degree_coef[iter][0]) + ' '
+                    if iter == 1:
+                        if degree_coef[iter][0] < 0:
+                            if line == '':
+                                sign = '-'
+                            else:
+                                sign = '- '
+                            number = str(-degree_coef[iter][0])
+                        else:
+                            if line == '':
+                                sign = ''
+                            else:
+                                sign = '+ '
+                            number = str(degree_coef[iter][0])
+                        line += sign + number + ' * ' + str(degree_coef[iter][1]) + ' '
+                    if iter > 1:
+                        if degree_coef[iter][0] < 0:
+                            if line == '':
+                                sign = '-'
+                            else:
+                                sign = '- '
+                            number = str(-degree_coef[iter][0])
+                        else:
+                            if line == '':
+                                sign = ''
+                            else:
+                                sign = '+ '
+                            number = str(degree_coef[iter][0])
+                        line += sign + number + ' * ' + str(degree_coef[iter][1]) + POWER + str(iter) + ' '
         line = line.strip() + ' = 0'
         if len(line) >= 2:
             if (line[0] in SIGNS) and line[1] == ' ':
@@ -200,12 +214,12 @@ def print_reduced(degree_coef:dict):
 def max_degree_solver_one(degree_coef:dict):
     max_degree = max(degree_coef.keys())
     if max_degree == 1:
-        if degree_coef[0][0] == 0:
-            if degree_coef[1][0] == 0:
+        if degree_coef[1][0] == 0:
+            if degree_coef[0][0] == 0:
                 print("The polynomial has an infinite number of solutions")
                 exit()
             else:
-                print(f"The solution is: {0.0000}")
+                print("Polynomial has no solutions")
                 exit()
         if degree_coef[1][0] == 0:
             print("The polynomial has an infinite number of solutions")
@@ -229,24 +243,25 @@ def solver(degree_coef:dict):
     if max_degree == 2:
         if degree_coef[0][0] == 0:
             max_degree_solver_one(degree_coef)
-        D = float(degree_coef[1][0] ** 2 - 4 * degree_coef[0][0] * degree_coef[2][0])
+        D = float(degree_coef[1][0] ** 2 - 4 * degree_coef[2][0] * degree_coef[0][0])
         if D > 0:
             print("Discriminant is strictly positive, the two solutions are:")
-            solution_one = (-degree_coef[1][0] + my_sqrt(D)) / (2 * degree_coef[0][0])
-            solution_two = (-degree_coef[1][0] - my_sqrt(D)) / (2 * degree_coef[0][0])
+            solution_one = (-degree_coef[1][0] + my_sqrt(D)) / (2 * degree_coef[2][0])
+            solution_two = (-degree_coef[1][0] - my_sqrt(D)) / (2 * degree_coef[2][0])
             print(f"%.5f" % solution_one)
             print(f"%.5f" % solution_two)
         if D == 0:
             print("The discrimination is zero so there is only one solution::")
-            if degree_coef[1][0] == 0:
-                single_solution = 0
-            else:
-                single_solution = (-1 * (degree_coef[1][0] / (2 * degree_coef[0][0])))
+            # if degree_coef[1][0] == 0:
+            #     single_solution = 0
+            # else:
+            single_solution = (-1 * (degree_coef[1][0] / (2 * degree_coef[2][0])))
+            single_solution = single_solution if single_solution != 0 else 0
             print("%.5f" % single_solution)
         if D < 0:
             print("Discriminant is strictly negative, the two solutions are:")
-            real = ((-degree_coef[1][0]) / (2 * degree_coef[0][0]))
-            imag = (my_sqrt(-D) / (2 * degree_coef[0][0]))
+            real = ((-degree_coef[1][0]) / (2 * degree_coef[2][0]))
+            imag = (my_sqrt(-D) / (2 * degree_coef[2][0]))
             print("First solution:", "real: %.5f +" % real, "image:%.5f" % imag)
             print("Second solution:", "real: %.5f -" % real, "image:%.5f" % imag)
 
