@@ -222,7 +222,7 @@ def max_degree_solver_one(degree_coef:dict):
         if degree_coef[1][0] == 0:
             print("The polynomial has an infinite number of solutions")
             exit()
-        print(f"The solution is: {-degree_coef[0][0] / degree_coef[1][0]}")
+        print("The solution is:\n%.2f" % (-degree_coef[0][0] / degree_coef[1][0]))
 
 
 def solver(degree_coef:dict):
@@ -246,22 +246,19 @@ def solver(degree_coef:dict):
             print("Discriminant is strictly positive, the two solutions are:")
             solution_one = (-degree_coef[1][0] + my_sqrt(D)) / (2 * degree_coef[2][0])
             solution_two = (-degree_coef[1][0] - my_sqrt(D)) / (2 * degree_coef[2][0])
-            print(f"%.5f" % solution_one)
-            print(f"%.5f" % solution_two)
+            print(f"%.6f" % solution_two)
+            print(f"%.6f" % solution_one)
         if D == 0:
-            print("The discrimination is zero so there is only one solution::")
-            # if degree_coef[1][0] == 0:
-            #     single_solution = 0
-            # else:
+            print("The discrimination is zero so there is only one solution:")
             single_solution = (-1 * (degree_coef[1][0] / (2 * degree_coef[2][0])))
             single_solution = single_solution if single_solution != 0 else 0
-            print("%.5f" % single_solution)
+            print("%.6f" % single_solution)
         if D < 0:
             print("Discriminant is strictly negative, the two solutions are:")
             real = ((-degree_coef[1][0]) / (2 * degree_coef[2][0]))
             imag = (my_sqrt(-D) / (2 * degree_coef[2][0]))
-            print("First solution:", "real: %.5f +" % real, "image:%.5f" % imag)
-            print("Second solution:", "real: %.5f -" % real, "image:%.5f" % imag)
+            print("First solution:", "real: %.6f +" % real, "image:%.6f" % imag)
+            print("Second solution:", "real: %.6f -" % real, "image:%.6f" % imag)
 
 
 def full_coenf_zerro(degree_coef):
