@@ -167,42 +167,40 @@ def get_reduced(coefs: list, variables: list, degrees: list):
     return degree_coef
 
 
-def print_reduced(degree_coef:dict):
+def get_sign(degree_coef, iter, line):
+    if degree_coef[iter][0] < 0:
+        if line == '':
+            sign = '-'
+        else:
+            sign = '- '
+        number = str(-degree_coef[iter][0])
+    else:
+        if line == '':
+            sign = ''
+        else:
+            sign = '+ '
+        number = str(degree_coef[iter][0])
+    return sign, number
+
+
+def print_reduced(degree_coef: dict, cool_reduced=False):
     line = ''
-    max_degree =  max(degree_coef.keys())
+    max_degree = max(degree_coef.keys())
     if degree_coef is not None:
         for iter in range(max_degree + 1):
             if iter in degree_coef:
-                if degree_coef[iter][0] != 0 or (max_degree == 0 and degree_coef[iter][0] == 0):
-                    if iter == 0:
-                        line += str(degree_coef[iter][0]) + ' '
-                    if iter == 1:
-                        if degree_coef[iter][0] < 0:
-                            if line == '':
-                                sign = '-'
-                            else:
-                                sign = '- '
-                            number = str(-degree_coef[iter][0])
-                        else:
-                            if line == '':
-                                sign = ''
-                            else:
-                                sign = '+ '
-                            number = str(degree_coef[iter][0])
-                        line += sign + number + ' * ' + str(degree_coef[iter][1]) + ' '
-                    if iter > 1:
-                        if degree_coef[iter][0] < 0:
-                            if line == '':
-                                sign = '-'
-                            else:
-                                sign = '- '
-                            number = str(-degree_coef[iter][0])
-                        else:
-                            if line == '':
-                                sign = ''
-                            else:
-                                sign = '+ '
-                            number = str(degree_coef[iter][0])
+                if degree_coef[iter][0] != 0 or (max_degree == 0 and degree_coef[iter][0] == 0) or not cool_reduced:
+                    if cool_reduced or (max_degree == 0 and degree_coef[iter][0] == 0):
+                        if iter == 0:
+                            line += str(degree_coef[iter][0]) + ' '
+                        if iter == 1:
+                            sign, number = get_sign(degree_coef, iter, line)
+                            line += sign + number + ' * ' + str(degree_coef[iter][1]) + ' '
+                        if iter > 1:
+                            sign, number = get_sign(degree_coef, iter, line)
+                            line += sign + number + ' * ' + str(degree_coef[iter][1]) + POWER + str(iter) + ' '
+                    else:
+                        sign, number = get_sign(degree_coef, iter, line)
                         line += sign + number + ' * ' + str(degree_coef[iter][1]) + POWER + str(iter) + ' '
         line = line.strip() + ' = 0'
         if len(line) >= 2:
@@ -281,13 +279,13 @@ def degree_exit(degrees):
         exit()
 
 
-def solution(polynomial: str):
+def solution(polynomial: str, cool_reduced):
     coefs, variables, degrees = parser(polynomial)
     if len(coefs) != len(variables) or len(variables) != len(degrees):
         error_input()
     degree_coef = get_reduced(coefs, variables, degrees)
     degree_coef = full_coenf_zerro(degree_coef)
-    print_reduced(degree_coef)
+    print_reduced(degree_coef, cool_reduced)
     degree_exit(degrees)
     solver(degree_coef)
 
@@ -295,10 +293,12 @@ def solution(polynomial: str):
 def get_string():
     parser = ArgumentParser()
     parser.add_argument("polynomial", type=str)
+    parser.add_argument('--cool-reduced', '-cr', dest="cool_reduced", action='store_const', const=True, help='Улучшает Reduced Form' )
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = get_string()
     polynomial = args.polynomial.strip()
-    solution(polynomial)
+    solution(polynomial, args.cool_reduced)
+
