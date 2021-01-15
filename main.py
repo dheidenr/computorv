@@ -38,7 +38,6 @@ def single_coeff(line: str, sign: str, coefs: list, variables: list, degrees: li
 
 
 def parse_coef_variable_degree(line: str, sign: str, coefs: list, variables: list, degrees: list):
-    print(f'parse coev variable degree{sign}{line}')
     if line[0] not in NUMBERS and  line[0] not in VARIABLE:
         error_input()
 
@@ -50,7 +49,6 @@ def parse_coef_variable_degree(line: str, sign: str, coefs: list, variables: lis
     if line[cursor] not in VARIABLE:
         length, number = parse_number(line[cursor:], sign)
         cursor += length
-        print(f'number:{number}')
         coefs.append(number)
     else:
         variables.append(line[cursor])
@@ -106,7 +104,6 @@ def parse_coef_variable_degree(line: str, sign: str, coefs: list, variables: lis
 
 
 def parse_number(line: str, sign: str):
-    print(f'purse number line:{line}')
     number_line = ''
     for letter in line:
         if letter in NUMBERS or letter in DOT:
@@ -117,7 +114,6 @@ def parse_number(line: str, sign: str):
         number = float(sign + number_line)
     else:
         number = int(sign + number_line)
-    print(f'result parse number:{number}')
     return len(number_line), number
 
 
@@ -132,19 +128,15 @@ def get_signs(line: str):
 
 
 def parser(line: str):
-    print('parser:')
-    print(''.join((line).split()))
     line = ''.join((line).split())
 
     if '=' not in line:
         print('Некорректное выражение, нет =')
         exit()
     polynomial = line.split('=')
-    print(polynomial)
     signs_list = []
     signs_list.append(get_signs(polynomial[0]))
     signs_list.append(get_signs(polynomial[1]))
-    print(signs_list)
     if len(polynomial) == 2:
         polynomial[0] = polynomial[0].replace('+', ' ').replace('-', ' ').split(' ')
         polynomial[1] = polynomial[1].replace('+', ' ').replace('-', ' ').split(' ')
@@ -153,23 +145,15 @@ def parser(line: str):
         exit()
     if polynomial[0][0] == '':
         del polynomial[0][0]
-    print("replaced:", polynomial)
     coefs = []
     variables = []
     degrees = []
 
     signs_list[1] = convert_sign_list(signs_list[1])
-    print('converted signs_list[1]', signs_list[1])
     for word, sign in zip(polynomial[0], signs_list[0]):
         parse_coef_variable_degree(word, sign, coefs, variables, degrees)
     for word, sign in zip(polynomial[1], signs_list[1]):
         parse_coef_variable_degree(word, sign, coefs, variables, degrees)
-    print(f'coefs:{coefs} variables:{variables} degrees:{degrees}')
-
-    print(f'Polynomial degree: {max(degrees)}')
-    if max(degrees) > 2:
-        print("The polynomial degree is strictly greater than 2, I can't solve.")
-        exit()
     return coefs, variables, degrees
 
 
@@ -221,14 +205,12 @@ def max_degree_solver_one(degree_coef:dict):
                 print("The polynomial has an infinite number of solutions")
                 exit()
             else:
-                print("Polynomial has no solutions")
+                print(f"The solution is: {0.0000}")
+                exit()
         if degree_coef[1][0] == 0:
             print("The polynomial has an infinite number of solutions")
             exit()
-        if degree_coef[0][0] == 0:
-            print(f"The solution is: {0.0000}")
-        else:
-            print(f"The solution is: {-degree_coef[1][0] / degree_coef[0][0]}")
+        print(f"The solution is: {-degree_coef[0][0] / degree_coef[1][0]}")
 
 
 def solver(degree_coef:dict):
@@ -277,15 +259,21 @@ def full_coenf_zerro(degree_coef):
     return degree_coef
 
 
+def degree_exit(degrees):
+    print(f'Polynomial degree: {max(degrees)}')
+    if max(degrees) > 2:
+        print("The polynomial degree is strictly greater than 2, I can't solve.")
+        exit()
+
+
 def solution(polynomial: str):
     coefs, variables, degrees = parser(polynomial)
     if len(coefs) != len(variables) or len(variables) != len(degrees):
         error_input()
     degree_coef = get_reduced(coefs, variables, degrees)
     degree_coef = full_coenf_zerro(degree_coef)
-    print(degree_coef)
     print_reduced(degree_coef)
-    print(f"original: {polynomial}")
+    degree_exit(degrees)
     solver(degree_coef)
 
 
