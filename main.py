@@ -5,16 +5,9 @@ from sqrt import my_sqrt
 DOT = "."
 NUMBERS = "0123456789"
 SIGNS = "+-"
-EQ = "="
 MULTI = '*'
 POWER = '^'
 VARIABLE = 'xX'
-
-# degree_coef = {
-#     0: 0,
-#     1: 0,
-#     2: 0
-# }
 
 
 def convert_sign_list(signs:list):
@@ -126,16 +119,6 @@ def parse_number(line: str, sign: str):
         number = int(sign + number_line)
     print(f'result parse number:{number}')
     return len(number_line), number
-
-
-def parse_sign(line:str):
-    print(line)
-    return cursor, sign
-
-
-def parse_variable(line:str):
-    print(line)
-    return cursor, variable
 
 
 def get_signs(line: str):
@@ -304,11 +287,6 @@ def solution(polynomial: str):
     print_reduced(degree_coef)
     print(f"original: {polynomial}")
     solver(degree_coef)
-    # print(polynomial.split('+').join(',').split(','))
-
-
-
-    # print("a=b,c:d".split('=').join(',').split(':').join(',').split(','))
 
 
 def get_string():
@@ -321,4 +299,3 @@ if __name__ == '__main__':
     args = get_string()
     polynomial = args.polynomial.strip()
     solution(polynomial)
-
